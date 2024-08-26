@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "yolop",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/gyx/projects/YOLOPv2/demo.py",
+            "console": "integratedTerminal",
+            "pythonPath":"/home/gyx/anaconda3/envs/yolop/bin/python",
+            "args": [
+                "--source", "data/cam_0",
+                "--save-txt",
+                "--save-conf",
+                "--img-size", "640"
+            ],
+            "cwd": "${fileDirname}",
+            "justMyCode": false
+        }
+    ]
+}

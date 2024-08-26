@@ -12,6 +12,8 @@ import cv2
 import numpy as np
 import torch
 import torchvision
+from PIL import Image
+import pickle
 
 logger = logging.getLogger(__name__)
 
@@ -452,8 +454,9 @@ class LoadImages:  # for inference
             assert img0 is not None, 'Image Not Found ' + path
             #print(f'image {self.count}/{self.nf} {path}: ', end='')
 
-        # Padded resize
+        # Padded resize default setting is 16:9
         img0 = cv2.resize(img0, (1280,720), interpolation=cv2.INTER_LINEAR)
+        # img0 = cv2.resize(img0, (3840,2160), interpolation=cv2.INTER_LINEAR)
         img = letterbox(img0, self.img_size, stride=self.stride)[0]
 
         # Convert
@@ -518,4 +521,78 @@ def lane_line_mask(ll = None):
     ll_seg_mask = torch.nn.functional.interpolate(ll_predict, scale_factor=2, mode='bilinear')
     ll_seg_mask = torch.round(ll_seg_mask).squeeze(1)
     ll_seg_mask = ll_seg_mask.int().squeeze().cpu().numpy()
+
+    # 此处添加mask存储逻辑
+    # img_reshaped_array = ll_seg_mask[:, :, np.newaxis]*255
+    # img_3spectrum = img_reshaped_array.repeat(3, axis=2)
+
+    # img_3spectrum = img_3spectrum.astype(np.uint8)
+    # img_bgr = cv2.cvtColor(img_3spectrum, cv2.COLOR_RGB2HSV)
+    # cv2.imwrite('image.jpg', img_bgr)
+
     return ll_seg_mask
+
+def extra_save_ll_to_array(ll_seg_mask,ll_seg_mask_saving_path="temp.pkl"):
+    with open(ll_seg_mask_saving_path, 'wb') as f:
+        pickle.dump(ll_seg_mask, f)
+
+def extra_save_ll_mask_to_image(ll_seg_mask,ll_seg_mask_saving_path="image.jpg"):
+    # 此处添加mask存储逻辑
+    semantic_to_instance_segmentation(ll_seg_mask)
+    img_reshaped_array = ll_seg_mask[:, :, np.newaxis]*255
+    img_3spectrum = img_reshaped_array.repeat(3, axis=2)
+
+    img_3spectrum = img_3spectrum.astype(np.uint8)
+    img_bgr = cv2.cvtColor(img_3spectrum, cv2.COLOR_RGB2BGR)
+
+    cv2.imwrite(ll_seg_mask_saving_path, img_bgr)
+
+def semantic_to_instance_segmentation(semantic_mask):
+    """
+    将语义分割的mask图层转化为实例分割的mask图层。
+    
+    参数:
+        semantic_mask (numpy.ndarray): 语义分割的结果，大小为 (H, W)，
+                                       每个像素值表示类别标签。
+    
+    返回:
+        instance_mask (numpy.ndarray): 实例分割的结果，大小为 (H, W)，
+                                       每个像素值表示唯一的实例ID。
+    """
+    # 初始化实例化的mask图层，大小与semantic_mask相同
+    instance_mask = np.zeros_like(semantic_mask)
+
+    # 用来跟踪每个类别的实例id
+    instance_id_counter = {}
+
+    # 获取所有类别的标签值
+    classes = np.unique(semantic_mask)
+
+    # 对每个类别分别处理
+    for cls in classes:
+        if cls == 0:
+            # 0 通常表示背景，可以跳过
+            continue
+
+        # 提取当前类别的mask
+        class_mask = (semantic_mask == cls).astype(np.uint8)
+
+        # 找出连通组件
+        num_labels, labels = cv2.connectedComponents(class_mask)
+
+        # 初始化该类别的实例id计数器
+        if cls not in instance_id_counter:
+            instance_id_counter[cls] = 1
+
+        # 为每个连通组件分配一个唯一的实例ID
+        for i in range(1, num_labels):
+            instance_mask[labels == i] = instance_id_counter[cls]
+            instance_id_counter[cls] += 1
+
+    # 返回实例分割的结果
+    return instance_mask
+
+# 使用示例
+# semantic_mask = ... # 你自己的语义分割结果
+# instance_mask = semantic_to_instance_segmentation(semantic_mask)
+
