@@ -4,11 +4,14 @@ from pathlib import Path
 import cv2
 import torch
 
+
+import os 
+print(os.getcwd())
 # Conclude setting / general reprocessing / plots / metrices / datasets
 from utils.utils import \
     time_synchronized,select_device, increment_path,\
     scale_coords,xyxy2xywh,non_max_suppression,split_for_trace_model,\
-    driving_area_mask,lane_line_mask,plot_one_box,show_seg_result,\
+    driving_area_mask,lane_line_mask,plot_one_box,show_seg_result,extra_save_ll_mask_to_image,extra_save_ll_to_array,\
     AverageMeter,\
     LoadImages
 
@@ -90,13 +93,15 @@ def detect():
 
         da_seg_mask = driving_area_mask(seg)
         ll_seg_mask = lane_line_mask(ll)
-
+        # 此处ll_seg_mask为车道线分割图，da_seg_mask为车道区域分割图
+        
         # Process detections
         for i, det in enumerate(pred):  # detections per image
-          
             p, s, im0, frame = path, '', im0s, getattr(dataset, 'frame', 0)
 
             p = Path(p)  # to Path
+            _pkl_mask_name = p.name.replace(".jpg", "_seg_mask.pkl")
+            pkl_mask_save_path = str(save_dir / _pkl_mask_name)
             save_path = str(save_dir / p.name)  # img.jpg
             txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
             s += '%gx%g ' % img.shape[2:]  # print string
@@ -129,6 +134,8 @@ def detect():
             if save_img:
                 if dataset.mode == 'image':
                     cv2.imwrite(save_path, im0)
+                    # extra_save_ll_mask_to_image(ll_seg_mask,save_path)
+                    extra_save_ll_to_array(ll_seg_mask,pkl_mask_save_path)
                     print(f" The image with the result is saved in: {save_path}")
                 else:  # 'video' or 'stream'
                     if vid_path != save_path:  # new video
