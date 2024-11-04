@@ -393,6 +393,7 @@ def box_iou(box1, box2):
 class LoadImages:  # for inference
     def __init__(self, path, img_size=640, stride=32):
         p = str(Path(path).absolute())  # os-agnostic absolute path
+        '''
         if '*' in p:
             files = sorted(glob.glob(p, recursive=True))  # glob
         elif os.path.isdir(p):
@@ -400,6 +401,20 @@ class LoadImages:  # for inference
         elif os.path.isfile(p):
             files = [p]  # files
         else:
+            raise Exception(f'ERROR: {p} does not exist')
+        '''
+
+        if '*' in p:
+            # 使用 glob.glob 递归地搜索匹配的文件
+            files = sorted(glob.glob(p, recursive=True))
+        elif os.path.isdir(p):
+            # 如果路径是一个目录，递归地搜索该目录下的所有文件
+            files = sorted(glob.glob(os.path.join(p, '**', '*'), recursive=True))
+        elif os.path.isfile(p):
+            # 如果路径是一个文件，将其放入列表中
+            files = [p]
+        else:
+            # 如果路径不存在，抛出异常
             raise Exception(f'ERROR: {p} does not exist')
 
         img_formats = ['bmp', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'dng', 'webp', 'mpo']  # acceptable image suffixes
@@ -533,6 +548,14 @@ def lane_line_mask(ll = None):
     return ll_seg_mask
 
 def extra_save_ll_to_array(ll_seg_mask,ll_seg_mask_saving_path="temp.pkl"):
+    path = Path(ll_seg_mask_saving_path)
+    directory = path.parent
+    if not directory.exists():
+        # 如果目录不存在，则创建它
+        directory.mkdir(parents=True, exist_ok=True)
+        print(f"Directory '{directory}' was created.")
+    else:
+        print(f"Directory '{directory}' already exists.")
     with open(ll_seg_mask_saving_path, 'wb') as f:
         pickle.dump(ll_seg_mask, f)
 
