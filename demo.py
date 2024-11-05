@@ -15,9 +15,6 @@ from utils.utils import \
     AverageMeter,\
     LoadImages
 
-<<<<<<< HEAD
-
-=======
 # 定义一个装饰器，用于统计函数运行时间
 def timeit(func):
     def wrapper(*args, **kwargs):
@@ -27,7 +24,6 @@ def timeit(func):
         print(f"Function {func.__name__} took {end_time - start_time:.4f} seconds to complete.")
         return result
     return wrapper
->>>>>>> my-feature-branch
 
 def make_parser():
     parser = argparse.ArgumentParser()
@@ -48,10 +44,7 @@ def make_parser():
     return parser
 
 
-<<<<<<< HEAD
-=======
 @timeit
->>>>>>> my-feature-branch
 def detect():
     # setting and directories
     source, weights,  save_txt, imgsz = opt.source, opt.weights,  opt.save_txt, opt.img_size
@@ -63,11 +56,8 @@ def detect():
     inf_time = AverageMeter()
     waste_time = AverageMeter()
     nms_time = AverageMeter()
-<<<<<<< HEAD
-=======
     # 开始记录时间
     start_time = time.time()
->>>>>>> my-feature-branch
 
     # Load model
     stride =32
@@ -80,11 +70,8 @@ def detect():
         model.half()  # to FP16  
     model.eval()
 
-<<<<<<< HEAD
-=======
     end_time = time.time()
     print(f"Model loading and preparation took {end_time - start_time:.4f} seconds to complete.")
->>>>>>> my-feature-branch
     # Set Dataloader
     vid_path, vid_writer = None, None
     dataset = LoadImages(source, img_size=imgsz, stride=stride)
@@ -126,15 +113,10 @@ def detect():
             p, s, im0, frame = path, '', im0s, getattr(dataset, 'frame', 0)
 
             p = Path(p)  # to Path
-<<<<<<< HEAD
-            _pkl_mask_name = p.name.replace(".jpg", "_seg_mask.pkl")
-            pkl_mask_save_path = str(save_dir / _pkl_mask_name)
-=======
             _pkl_uuid = p.parts[7]
             _pkl_mask_name = p.name.replace(".jpg", "_seg_mask.pkl")
             # pkl_mask_save_path = str(save_dir / _pkl_mask_name)
             pkl_mask_save_path = str(save_dir /p.parts[7] / "array_mask"/_pkl_mask_name)
->>>>>>> my-feature-branch
             save_path = str(save_dir / p.name)  # img.jpg
             txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
             s += '%gx%g ' % img.shape[2:]  # print string
@@ -166,11 +148,7 @@ def detect():
             # Save results (image with detections)
             if save_img:
                 if dataset.mode == 'image':
-<<<<<<< HEAD
-                    cv2.imwrite(save_path, im0)
-=======
                     # cv2.imwrite(save_path, im0)
->>>>>>> my-feature-branch
                     # extra_save_ll_mask_to_image(ll_seg_mask,save_path)
                     extra_save_ll_to_array(ll_seg_mask,pkl_mask_save_path)
                     print(f" The image with the result is saved in: {save_path}")
@@ -196,17 +174,9 @@ def detect():
     print('inf : (%.4fs/frame)   nms : (%.4fs/frame)' % (inf_time.avg,nms_time.avg))
     print(f'Done. ({time.time() - t0:.3f}s)')
 
-<<<<<<< HEAD
-
-=======
->>>>>>> my-feature-branch
 if __name__ == '__main__':
     opt =  make_parser().parse_args()
     print(opt)
 
     with torch.no_grad():
-<<<<<<< HEAD
-            detect()
-=======
         detect(1000000)
->>>>>>> my-feature-branch

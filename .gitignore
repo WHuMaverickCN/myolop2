@@ -1,7 +1,6 @@
 runs/
 data/
-data/weights/
-
+data/weights/yolopv2.pt
 
 *.jpg
 #test
