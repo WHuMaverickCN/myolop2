@@ -12,13 +12,39 @@
             "console": "integratedTerminal",
             "pythonPath":"/home/gyx/anaconda3/envs/yolop/bin/python",
             "args": [
+<<<<<<< HEAD
                 "--source", "data/cam_0",
                 "--save-txt",
+=======
+                // "--source", "data/cams_1017",
+                "--source", "data/final_cams1a",
+                // "--source","/home/gyx/projects/YOLOPv2/data/cams_1017/00045281-0b75-4530-8466-ea1a0b6976b4",
+                // "--save-txt",
+                // "--device","cpu",
+>>>>>>> my-feature-branch
                 "--save-conf",
                 "--img-size", "640"
             ],
             "cwd": "${fileDirname}",
+<<<<<<< HEAD
             "justMyCode": false
+=======
+            "justMyCode": true
+        },
+        {
+            "name": "yolop2",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/gyx/projects/YOLOPv2/demo.py",
+            "console": "integratedTerminal",
+            "pythonPath":"/home/gyx/anaconda3/envs/yolop/bin/python",
+            "args": [
+                "--source", "data/cam_4/cam_0_tunnel",
+                "--name","test213",
+                "--exist-ok"
+            ],
+            "cwd": "${fileDirname}"
+>>>>>>> my-feature-branch
         }
     ]
 }
