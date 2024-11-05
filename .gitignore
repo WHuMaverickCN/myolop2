@@ -1,0 +1,7 @@
+runs/
+data/
+data/weights/
+
+
+*.jpg
+#test
