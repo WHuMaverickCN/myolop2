@@ -4,7 +4,6 @@ from pathlib import Path
 import cv2
 import torch
 
-
 import os 
 print(os.getcwd())
 # Conclude setting / general reprocessing / plots / metrices / datasets
@@ -41,6 +40,7 @@ def make_parser():
     parser.add_argument('--project', default='runs/detect', help='save results to project/name')
     parser.add_argument('--name', default='exp', help='save results to project/name')
     parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
+    parser.add_argument('--jpg-mode', action='store_true', help='使用jpg格式存储分割数据,此方法节约存储空间与传输带宽')
     return parser
 
 
@@ -60,7 +60,7 @@ def detect():
     start_time = time.time()
 
     # Load model
-    stride =32
+    stride = 32
     model  = torch.jit.load(weights)
     device = select_device(opt.device)
     half = device.type != 'cpu'  # half precision only supported on CUDA
@@ -115,9 +115,12 @@ def detect():
             p = Path(p)  # to Path
             _pkl_uuid = p.parts[7]
             _pkl_mask_name = p.name.replace(".jpg", "_seg_mask.pkl")
+
+            # _img_mask_name = p.name.replace(".jpg", "_seg_mask.jpg")
             # pkl_mask_save_path = str(save_dir / _pkl_mask_name)
             pkl_mask_save_path = str(save_dir /p.parts[7] / "array_mask"/_pkl_mask_name)
             save_path = str(save_dir / p.name)  # img.jpg
+            image_mask_save_path = str(save_dir /p.parts[7] / "image_mask"/_img_mask_name)
             txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
             s += '%gx%g ' % img.shape[2:]  # print string
             gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
@@ -151,6 +154,7 @@ def detect():
                     # cv2.imwrite(save_path, im0)
                     # extra_save_ll_mask_to_image(ll_seg_mask,save_path)
                     extra_save_ll_to_array(ll_seg_mask,pkl_mask_save_path)
+                    # extra_save_ll_mask_to_image(ll_seg_mask,image_mask_save_path)
                     print(f" The image with the result is saved in: {save_path}")
                 else:  # 'video' or 'stream'
                     if vid_path != save_path:  # new video

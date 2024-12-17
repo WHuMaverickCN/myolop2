@@ -559,7 +559,34 @@ def extra_save_ll_to_array(ll_seg_mask,ll_seg_mask_saving_path="temp.pkl"):
     with open(ll_seg_mask_saving_path, 'wb') as f:
         pickle.dump(ll_seg_mask, f)
 
-def extra_save_ll_mask_to_image(ll_seg_mask,ll_seg_mask_saving_path="image.jpg"):
+def extra_save_ll_mask_to_image(ll_seg_mask, ll_seg_mask_saving_path="image.jpg"):
+    # 此处添加mask存储逻辑
+    semantic_to_instance_segmentation(ll_seg_mask)
+    
+    # 归一化，确保值在[0, 255]之间
+    ll_seg_mask_normalized = np.clip(ll_seg_mask * 255, 0, 255).astype(np.uint8)
+    
+    # 根据像素值接近于0或255的要求，将其分配为0或1
+    binary_mask = np.where(ll_seg_mask_normalized >= 128, 1, 0)
+    
+    # 保存为0和1分布的单通道图像
+    binary_mask = binary_mask.astype(np.uint8)  # 确保是uint8类型
+    cv2.imwrite(ll_seg_mask_saving_path, binary_mask)  # 将0,1图像转换为0,255二值图像
+
+    # 路径处理
+    path = Path(ll_seg_mask_saving_path)
+    directory = path.parent
+    if not directory.exists():
+        # 如果目录不存在，则创建它
+        directory.mkdir(parents=True, exist_ok=True)
+        print(f"Directory '{directory}' was created.")
+    else:
+        print(f"Directory '{directory}' already exists.")
+
+# 假设ll_seg_mask是一个numpy数组，你可以这样调用函数：
+# extra_save_ll_mask_to_image(ll_seg_mask, "path_to_save_image.jpg")
+
+def extra_save_ll_mask_to_image__(ll_seg_mask,ll_seg_mask_saving_path="image.jpg"):
     # 此处添加mask存储逻辑
     semantic_to_instance_segmentation(ll_seg_mask)
     img_reshaped_array = ll_seg_mask[:, :, np.newaxis]*255
@@ -567,6 +594,16 @@ def extra_save_ll_mask_to_image(ll_seg_mask,ll_seg_mask_saving_path="image.jpg")
 
     img_3spectrum = img_3spectrum.astype(np.uint8)
     img_bgr = cv2.cvtColor(img_3spectrum, cv2.COLOR_RGB2BGR)
+
+    #路径处理
+    path = Path(ll_seg_mask_saving_path)
+    directory = path.parent
+    if not directory.exists():
+        # 如果目录不存在，则创建它
+        directory.mkdir(parents=True, exist_ok=True)
+        print(f"Directory '{directory}' was created.")
+    else:
+        print(f"Directory '{directory}' already exists.")
 
     cv2.imwrite(ll_seg_mask_saving_path, img_bgr)
 
