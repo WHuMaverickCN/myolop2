@@ -393,10 +393,7 @@ def box_iou(box1, box2):
 class LoadImages:  # for inference
     def __init__(self, path, img_size=640, stride=32):
         p = str(Path(path).absolute())  # os-agnostic absolute path
-<<<<<<< HEAD
-=======
         '''
->>>>>>> my-feature-branch
         if '*' in p:
             files = sorted(glob.glob(p, recursive=True))  # glob
         elif os.path.isdir(p):
@@ -405,8 +402,6 @@ class LoadImages:  # for inference
             files = [p]  # files
         else:
             raise Exception(f'ERROR: {p} does not exist')
-<<<<<<< HEAD
-=======
         '''
 
         if '*' in p:
@@ -421,7 +416,6 @@ class LoadImages:  # for inference
         else:
             # 如果路径不存在，抛出异常
             raise Exception(f'ERROR: {p} does not exist')
->>>>>>> my-feature-branch
 
         img_formats = ['bmp', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'dng', 'webp', 'mpo']  # acceptable image suffixes
         vid_formats = ['mov', 'avi', 'mp4', 'mpg', 'mpeg', 'm4v', 'wmv', 'mkv']  # acceptable video suffixes
@@ -554,8 +548,6 @@ def lane_line_mask(ll = None):
     return ll_seg_mask
 
 def extra_save_ll_to_array(ll_seg_mask,ll_seg_mask_saving_path="temp.pkl"):
-<<<<<<< HEAD
-=======
     path = Path(ll_seg_mask_saving_path)
     directory = path.parent
     if not directory.exists():
@@ -564,7 +556,6 @@ def extra_save_ll_to_array(ll_seg_mask,ll_seg_mask_saving_path="temp.pkl"):
         print(f"Directory '{directory}' was created.")
     else:
         print(f"Directory '{directory}' already exists.")
->>>>>>> my-feature-branch
     with open(ll_seg_mask_saving_path, 'wb') as f:
         pickle.dump(ll_seg_mask, f)
 

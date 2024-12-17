@@ -2,5 +2,6 @@ runs/
 data/
 data/weights/yolopv2.pt
 
+final_*
 *.jpg
 #test
