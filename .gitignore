@@ -1,5 +1,11 @@
-runs/
-/data/
+/runs/
+/..bfg-report/
+# Ignore everything in data directory
+/data/*
+
+# Don't ignore the weights directory itself
+!/data/weights/
+# Don't ignore model.txt in weights directory
 !/data/weights/model.txt
 
 /demo_backup.py
