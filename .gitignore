@@ -1,6 +1,15 @@
 runs/
-data/
-data/weights/yolopv2.pt
+/data/
+!/data/weights/model.txt
+
+/demo_backup.py
+
+__pycache__/
+*.py[cod]
+*.pyc
 
 *.jpg
+
+/*.jar
+
 #test
