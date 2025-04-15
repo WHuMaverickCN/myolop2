@@ -12,6 +12,8 @@
 
 /demo_backup.py
 
+/README.md
+
 __pycache__/
 *.py[cod]
 *.pyc
