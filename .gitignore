@@ -2,6 +2,7 @@
 /..bfg-report/
 # Ignore everything in data directory
 /data/*
+/.vscode/
 
 # Don't ignore the weights directory itself
 !/data/weights/
