@@ -26,7 +26,7 @@ def timeit(func):
 
 def make_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', nargs='+', type=str, default='data/weights/yolopv2.pt', help='model.pt path(s)')
+    parser.add_argument('--weights', nargs='+', type=str, default='data/weights/seg_model.pt', help='model.pt path(s)')
     parser.add_argument('--source', type=str, default='data/example.jpg', help='source')  # file/folder, 0 for webcam
     parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
     parser.add_argument('--conf-thres', type=float, default=0.3, help='object confidence threshold')
@@ -118,7 +118,7 @@ def detect():
 
             # _img_mask_name = p.name.replace(".jpg", "_seg_mask.jpg")
             # pkl_mask_save_path = str(save_dir / _pkl_mask_name)
-            pkl_mask_save_path = str(save_dir /p.parts[7] / "array_mask"/_pkl_mask_name)
+            pkl_mask_save_path = str(save_dir /p.parts[-3] / "array_mask"/_pkl_mask_name)
             save_path = str(save_dir / p.name)  # img.jpg
             image_mask_save_path = str(save_dir /p.parts[7] / "image_mask"/_img_mask_name)
             txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
