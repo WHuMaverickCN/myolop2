@@ -118,7 +118,7 @@ def detect():
 
             # _img_mask_name = p.name.replace(".jpg", "_seg_mask.jpg")
             # pkl_mask_save_path = str(save_dir / _pkl_mask_name)
-            pkl_mask_save_path = str(save_dir /p.parts[7] / "array_mask"/_pkl_mask_name)
+            pkl_mask_save_path = str(save_dir /p.parts[-3] / "array_mask"/_pkl_mask_name)
             save_path = str(save_dir / p.name)  # img.jpg
             image_mask_save_path = str(save_dir /p.parts[7] / "image_mask"/_img_mask_name)
             txt_path = str(save_dir / 'labels' / p.stem) + ('' if dataset.mode == 'image' else f'_{frame}')  # img.txt
